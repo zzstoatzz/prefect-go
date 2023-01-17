@@ -10,6 +10,7 @@ type PrefectClient struct {
 	httpClient *http.Client
 }
 
+// New creates a new PrefectClient
 func New() *PrefectClient {
 	return &PrefectClient{
 		httpClient: &http.Client{},
