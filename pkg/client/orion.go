@@ -5,8 +5,14 @@
 package client
 
 import (
+	"encoding/json"
 	"errors"
+
+	"github.com/zzstoatzz/prefect-go/pkg/data"
+	"github.com/zzstoatzz/prefect-go/pkg/utils"
 )
+
+// admin methods
 
 func (client *PrefectClient) HealthCheck() (bool, error) {
 
@@ -34,17 +40,60 @@ func (client *PrefectClient) Hello() (string, error) {
 	return string(resp), nil
 }
 
-func (client *PrefectClient) ReadFlow(flowId string) (string, error) {
+// read methods
+
+func (client *PrefectClient) ReadFlow(flowId string) (*data.Flow, error) {
+
+	if !utils.IsValidUUID(flowId) {
+		return nil, errors.New("Provided `flowId` is not a valid UUID")
+	}
 
 	resp, err := client.Request(
 		"GET", client.BaseURL+"/flows/"+flowId, client.headers, nil,
 	)
 
 	if err != nil {
-		println(err)
-		return "", err
-
+		return nil, err
 	}
 
-	return string(resp), nil
+	var flow data.Flow
+	json.Unmarshal(resp, &flow)
+
+	return &flow, nil
+}
+
+func (client *PrefectClient) ReadFlowByName(flowName string) (*data.Flow, error) {
+
+	resp, err := client.Request(
+		"GET", client.BaseURL+"/flows/name/"+flowName, client.headers, nil,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var flow data.Flow
+	json.Unmarshal(resp, &flow)
+
+	return &flow, nil
+}
+
+func (client *PrefectClient) ReadFlowRun(flowRunId string) (*data.FlowRun, error) {
+
+	if !utils.IsValidUUID(flowRunId) {
+		return nil, errors.New("Provided `flowRunId` is not a valid UUID")
+	}
+
+	resp, err := client.Request(
+		"GET", client.BaseURL+"/flow_runs/"+flowRunId, client.headers, nil,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var flowRun data.FlowRun
+	json.Unmarshal(resp, &flowRun)
+
+	return &flowRun, nil
 }

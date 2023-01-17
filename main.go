@@ -2,6 +2,8 @@ package main
 
 // import client package
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -21,23 +23,36 @@ func main() {
 		base_url,
 	)
 
-	// test health check
-	resp, err := prefect_client.HealthCheck()
+	// // test health check
+	// resp, err := prefect_client.HealthCheck()
 
 	// test hello
 	// resp, err := prefect_client.Hello()
 
-	// // test create flow
+	// // test read flow
 	// flowId := "103c9a44-cf7d-483e-bed2-681112b542ab"
 
 	// resp, err := prefect_client.ReadFlow(flowId)
 
+	// // test read flow by name
+	// flowName := "testing"
+
+	// resp, err := prefect_client.ReadFlowByName(flowName)
+
+	// test read flow runs
+	flowRunId := "c451b292-148e-4f47-8d8c-393712975936"
+
+	resp, err := prefect_client.ReadFlowRun(flowRunId)
+
+	// handle errors
 	if err != nil {
 		println(err)
 		panic(err)
 	}
 
-	// print the response
-	println(resp)
+	// pretty print the response
+	empJson, _ := json.MarshalIndent(resp, "", " ")
+
+	fmt.Printf("RESPONSE %s\n", string(empJson))
 
 }
