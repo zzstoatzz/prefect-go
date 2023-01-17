@@ -46,13 +46,12 @@ func main() {
 
 	// handle errors
 	if err != nil {
-		println(err)
-		panic(err)
+		fmt.Printf("ERROR: %s\n", err)
 	}
 
 	// pretty print the response
 	empJson, _ := json.MarshalIndent(resp, "", " ")
 
-	fmt.Printf("RESPONSE %s\n", string(empJson))
+	fmt.Printf("RESPONSE: %s\n", string(empJson))
 
 }
